@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package nasa.saga.transport.v1;
+
+option java_package = "io.github.nasaruntime.saga.proto.transport.v1";
+option java_multiple_files = true;
+option java_outer_classname = "SagaTransportProto";
+
+service SagaCommandTransport {
+  rpc Deliver(SagaDeliveryRequest) returns (SagaDeliveryReceipt);
+}
+
+service SagaResultTransport {
+  rpc Deliver(SagaDeliveryRequest) returns (SagaDeliveryReceipt);
+}
+
+message SagaDeliveryRequest {
+  bytes envelope_json = 1;
+}
+
+enum SagaReceiptKind {
+  SAGA_RECEIPT_KIND_UNSPECIFIED = 0;
+  SAGA_RECEIPT_KIND_COMMITTED = 1;
+  SAGA_RECEIPT_KIND_DUPLICATE = 2;
+  SAGA_RECEIPT_KIND_DETERMINISTIC_REJECT = 3;
+  SAGA_RECEIPT_KIND_RETRYABLE = 4;
+}
+
+message SagaDeliveryReceipt {
+  SagaReceiptKind kind = 1;
+  string reason = 2;
+}

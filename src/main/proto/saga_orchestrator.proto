@@ -1,0 +1,235 @@
+syntax = "proto3";
+
+package nasa.saga.orchestrator.v1;
+
+option java_package = "io.github.nasaruntime.saga.proto.orchestrator.v1";
+option java_multiple_files = true;
+option java_outer_classname = "SagaOrchestratorProto";
+
+import "google/protobuf/timestamp.proto";
+
+service SagaOrchestrator {
+  rpc StartSaga(StartSagaRequest) returns (StartSagaResponse);
+  rpc GetSaga(GetSagaRequest) returns (SagaSnapshot);
+  rpc QuerySagas(QuerySagasRequest) returns (QuerySagasResponse);
+  rpc GetAuditTrail(GetAuditTrailRequest) returns (GetAuditTrailResponse);
+}
+
+service SagaOrchestratorAdmin {
+  rpc PauseSaga(SagaManagementRequest) returns (SagaSnapshot);
+  rpc ResumeSaga(SagaManagementRequest) returns (SagaSnapshot);
+  rpc RetryCompensation(SagaManagementRequest) returns (SagaSnapshot);
+  rpc RetryResolution(SagaManagementRequest) returns (SagaSnapshot);
+  rpc ManualClose(SagaManagementRequest) returns (SagaSnapshot);
+}
+
+service SagaDefinitionRegistry {
+  rpc RegisterCapability(RegisterCapabilityRequest) returns (CapabilityReceipt);
+  rpc PublishDefinition(PublishDefinitionRequest) returns (PublishDefinitionResponse);
+  rpc ActivateDefinition(DefinitionOperationRequest) returns (DefinitionRecord);
+  rpc DeprecateDefinition(DefinitionOperationRequest) returns (DefinitionRecord);
+  rpc RetireDefinition(DefinitionOperationRequest) returns (DefinitionRecord);
+  rpc GetDefinition(GetDefinitionRequest) returns (DefinitionRecord);
+}
+
+message SagaKey {
+  string tenant_id = 1;
+  string saga_id = 2;
+}
+
+message SagaPayload {
+  // 规范媒体类型；start 空值按 application/json 解释，正文保留原始字节。
+  string content_type = 1;
+  // start 与首步 definition 的 schema 一致；非 JSON 必填，审计使用固定事实类型。
+  string schema_id = 2;
+  bytes body = 3;
+}
+
+message DefinitionKey {
+  string tenant_id = 1;
+  string workflow = 2;
+  uint32 definition_version = 3;
+}
+
+message CapabilityDescriptor {
+  DefinitionKey definition = 1;
+  string step = 2;
+  string owner = 3;
+  string descriptor_format = 4;
+  bytes canonical_document = 5;
+  string sha256 = 6;
+  uint32 requested_lease_seconds = 7;
+}
+
+message RegisterCapabilityRequest {
+  CapabilityDescriptor capability = 1;
+  string registration_id = 2;
+}
+
+message CapabilityReceipt {
+  string registration_id = 1;
+  string capability_digest = 2;
+  google.protobuf.Timestamp accepted_until = 3;
+  uint64 route_generation = 4;
+}
+
+message DefinitionArtifact {
+  DefinitionKey key = 1;
+  string format = 2;
+  bytes canonical_document = 3;
+  string sha256 = 4;
+  string signing_key_id = 5;
+  bytes signature = 6;
+}
+
+enum DefinitionPublishDisposition {
+  DEFINITION_PUBLISH_DISPOSITION_UNSPECIFIED = 0;
+  DEFINITION_PUBLISH_DISPOSITION_COMMITTED = 1;
+  DEFINITION_PUBLISH_DISPOSITION_DUPLICATE = 2;
+}
+
+enum DefinitionLifecycle {
+  DEFINITION_LIFECYCLE_UNSPECIFIED = 0;
+  DEFINITION_LIFECYCLE_CANDIDATE = 1;
+  DEFINITION_LIFECYCLE_ACTIVE = 2;
+  DEFINITION_LIFECYCLE_DEPRECATED = 3;
+  DEFINITION_LIFECYCLE_RETIRED = 4;
+}
+
+message DefinitionRecord {
+  DefinitionKey key = 1;
+  string sha256 = 2;
+  DefinitionLifecycle lifecycle = 3;
+  uint64 catalog_generation = 4;
+  google.protobuf.Timestamp published_at = 5;
+  google.protobuf.Timestamp activated_at = 6;
+}
+
+message PublishDefinitionRequest {
+  DefinitionArtifact artifact = 1;
+}
+
+message PublishDefinitionResponse {
+  DefinitionPublishDisposition disposition = 1;
+  DefinitionRecord definition = 2;
+}
+
+message DefinitionOperationRequest {
+  DefinitionKey key = 1;
+  string expected_sha256 = 2;
+  string operation_id = 3;
+  string reason = 4;
+}
+
+message GetDefinitionRequest {
+  DefinitionKey key = 1;
+}
+
+message StartSagaRequest {
+  SagaKey key = 1;
+  string workflow = 2;
+  uint32 definition_version = 3;
+  string expected_definition_digest = 4;
+  string business_key = 5;
+  string trigger_id = 6;
+  SagaPayload input = 7;
+  google.protobuf.Timestamp deadline = 8;
+}
+
+enum StartDisposition {
+  START_DISPOSITION_UNSPECIFIED = 0;
+  START_DISPOSITION_COMMITTED = 1;
+  START_DISPOSITION_DUPLICATE = 2;
+}
+
+message StartSagaResponse {
+  StartDisposition disposition = 1;
+  string request_digest = 2;
+  SagaSnapshot saga = 3;
+}
+
+message GetSagaRequest {
+  SagaKey key = 1;
+}
+
+enum SagaStatus {
+  SAGA_STATUS_UNSPECIFIED = 0;
+  SAGA_STATUS_RUNNING = 1;
+  SAGA_STATUS_CANCELLING = 2;
+  SAGA_STATUS_WAITING_RESOLUTION = 3;
+  SAGA_STATUS_COMPENSATING = 4;
+  SAGA_STATUS_COMPLETED = 5;
+  SAGA_STATUS_COMPENSATED = 6;
+  SAGA_STATUS_MANUAL_INTERVENTION = 7;
+  SAGA_STATUS_MANUALLY_CLOSED = 8;
+}
+
+enum SagaControlState {
+  SAGA_CONTROL_STATE_UNSPECIFIED = 0;
+  SAGA_CONTROL_STATE_ACTIVE = 1;
+  SAGA_CONTROL_STATE_PAUSED = 2;
+}
+
+message SagaSnapshot {
+  SagaKey key = 1;
+  string workflow = 2;
+  uint32 definition_version = 3;
+  string definition_digest = 4;
+  string business_key = 5;
+  SagaStatus status = 6;
+  SagaControlState control_state = 7;
+  uint64 state_version = 8;
+  uint64 control_version = 9;
+  string failure_code = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+  string direction = 13;
+  optional string current_step = 14;
+  optional int64 deadline_at_ms = 15;
+  string traceparent = 16;
+}
+
+message QuerySagasRequest {
+  string tenant_id = 1;
+  string workflow = 2;
+  repeated SagaStatus statuses = 3;
+  uint32 page_size = 4;
+  string page_token = 5;
+  // 创建时间范围使用 Unix 毫秒，边界与实例查询的时间排序一致。
+  optional int64 created_from_ms = 6;
+  optional int64 created_to_ms = 7;
+}
+
+message QuerySagasResponse {
+  repeated SagaSnapshot sagas = 1;
+  string next_page_token = 2;
+}
+
+message GetAuditTrailRequest {
+  SagaKey key = 1;
+  uint32 page_size = 2;
+  string page_token = 3;
+}
+
+message SagaAuditRecord {
+  string audit_id = 1;
+  string kind = 2;
+  uint64 state_version = 3;
+  string actor = 4;
+  string reason = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+  SagaPayload details = 7;
+}
+
+message GetAuditTrailResponse {
+  repeated SagaAuditRecord records = 1;
+  string next_page_token = 2;
+}
+
+message SagaManagementRequest {
+  SagaKey key = 1;
+  string operation_id = 2;
+  string reason = 3;
+  optional uint64 expected_state_version = 4;
+  optional uint64 expected_control_version = 5;
+}
