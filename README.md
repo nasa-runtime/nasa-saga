@@ -27,6 +27,7 @@ Java 侧不提供 Rust Orchestrator 的 `SagaOrchestrator`、`SagaOrchestratorAd
 | [通信执行组件](docs/execution/README.md) | 执行器配置、接入范围、资源归属与生命周期 |
 | [运维指南](docs/operations.md) | 配置责任、状态观测、失败处置、保留证据与有界停机 |
 | [协议说明](docs/protocol.md) | 跨语言身份、原始正文、收据和类型兼容边界 |
+| [Maven Central 发布](docs/releasing.md) | 发布配置、签名、归档、上传与公开状态确认 |
 | [贡献指南](CONTRIBUTING.md) / [安全策略](SECURITY.md) | 构建、贡献要求和私密漏洞报告 |
 | [许可证](LICENSE) | Apache-2.0 OR MIT，按使用者选择其中一种 |
 

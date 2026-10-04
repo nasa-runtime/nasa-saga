@@ -20,6 +20,9 @@ Maven 的 JDK 要求为 `[21,)`，不设版本上限；`release=21` 固定编译
 构建生成 protobuf/gRPC 类型、主 JAR、sources JAR 和 Javadoc JAR。生成类不手工维护；协议源位于
 `src/main/proto`，其 wire 合同与 Rust `nasaga-runtime-core/proto` 一致。
 
+main、release 和相应 Pull Request 的 CI 使用 JDK 21、25、27 构建，并核对正式坐标与依赖。
+`central-release` profile 的签名、凭据与上传行为见 [Maven Central 发布](docs/releasing.md)。
+
 ## 代码与文档
 
 - record 使用 `io.github.nasaruntime.saga.rc`；服务接口和 transport 使用根包，MyBatis 适配使用 `mybatis` 包。

@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  push:
+    branches: [main, release]
+  pull_request:
+    branches: [main, release]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: JDK ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ["21", "25", "27"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Build release artifacts
+        run: mvn -B -ntp clean verify
+      - name: Check release coordinates and dependencies
+        run: mvn -B -ntp -Pcentral-release validate

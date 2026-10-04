@@ -28,6 +28,7 @@ only control local type names.
 | [Communication execution](docs/execution/README.en.md) | Executor configuration, scope, ownership, and lifecycle |
 | [Operations](docs/operations.en.md) | Configuration ownership, monitoring, failures, evidence retention, bounded shutdown |
 | [Protocol](docs/protocol.en.md) | Cross-language identities, raw payloads, receipts, compatibility |
+| [Publishing to Maven Central](docs/releasing.en.md) | Release configuration, signing, archives, upload, and public availability |
 | [Contributing](CONTRIBUTING.en.md) / [Security](SECURITY.en.md) | Development requirements and private vulnerability reporting |
 | [License](LICENSE) | Apache-2.0 OR MIT, at your option |
 

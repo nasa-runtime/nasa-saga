@@ -21,6 +21,10 @@ Keep that baseline when building on a newer JDK to avoid introducing dependencie
 The build generates protobuf/gRPC types, the main JAR, sources JAR, and Javadoc JAR. Do not edit generated classes.
 Protocol sources are in `src/main/proto` and retain the wire contract from Rust `nasaga-runtime-core/proto`.
 
+CI builds main, release, and their pull requests on JDK 21, 25, and 27 and checks release coordinates and dependencies.
+See [Publishing to Maven Central](docs/releasing.en.md) for the signing, credentials, and upload behavior of the
+`central-release` profile.
+
 ## Code and documentation
 
 - Public records belong in `io.github.nasaruntime.saga.rc`; service and transport APIs use the root package; MyBatis
