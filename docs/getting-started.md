@@ -17,7 +17,8 @@ SDK 构造 HTTP/gRPC 通信组件时默认按需启动 nasa-core 时间轮，并
 
 ## 依赖与包名
 
-使用 JDK 21+、Maven 3.6.3+，在应用 POM 中声明：
+构建与运行使用 JDK 21 或更高版本，Maven 要求 3.6.3+。SDK 产物以 Java 21 为兼容基线。
+在应用 POM 中声明：
 
 ```xml
 <dependency>

@@ -2,7 +2,7 @@
 
 [中文](README.md) | [English](README.en.md)
 
-`nasa-saga` 让 Java 21 服务以 HTTP/HMAC 或 gRPC/mTLS 参与 Rust Saga 编排：通过 `@Saga` 声明步骤，
+`nasa-saga` 让使用 JDK 21 及以上版本的 Java 服务以 HTTP/HMAC 或 gRPC/mTLS 参与 Rust Saga 编排：通过 `@Saga` 声明步骤，
 把业务事实与 Inbox、gate、result Outbox 原子提交，并以固定身份、租约和 fencing 在崩溃或网络不确定后恢复投递。
 可靠 client 同样把业务写入与 start intent 放入本地事务，避免业务已提交却丢失发起意图。
 
@@ -56,7 +56,9 @@ participant 的 ACK 必须晚于本地 COMMIT，网络重投保持原 event/comm
 
 ## 依赖
 
-要求 JDK 21+ 和 Maven 3.6.3+。构建时由 Maven 生成 Java gRPC client/server 类型：
+构建与运行最低要求 JDK 21，允许使用更高版本；构建工具要求 Maven 3.6.3+。
+`release=21` 保持产物的 Java 21 API 与字节码基线，不限定构建或运行必须使用 JDK 21。
+构建时由 Maven 生成 Java gRPC client/server 类型：
 
 ```bash
 mvn -B -ntp verify

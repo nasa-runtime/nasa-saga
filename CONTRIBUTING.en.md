@@ -15,6 +15,9 @@ Use JDK 21+ and Maven 3.6.3+:
 mvn -B -ntp clean verify
 ```
 
+Maven accepts JDK versions in `[21,)`, with no upper bound. `release=21` sets the artifact's compatibility baseline.
+Keep that baseline when building on a newer JDK to avoid introducing dependencies on newer APIs or bytecode.
+
 The build generates protobuf/gRPC types, the main JAR, sources JAR, and Javadoc JAR. Do not edit generated classes.
 Protocol sources are in `src/main/proto` and retain the wire contract from Rust `nasaga-runtime-core/proto`.
 

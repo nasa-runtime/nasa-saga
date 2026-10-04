@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>nasa-saga</name>
-    <description>面向 NASA Rust 编排的 Java 21 Saga 客户端与注解式参与方，支持持久发起意图、同源 Inbox/Outbox 事务、租约隔离、HTTP/gRPC 互通及共享时间轮任务执行器</description>
+    <description>适用于 JDK 21 及以上版本、面向 NASA Rust 编排的 Saga 客户端与注解式参与方，支持持久发起意图、同源 Inbox/Outbox 事务、租约隔离、HTTP/gRPC 互通及共享时间轮任务执行器</description>
     <url>https://github.com/nasa-runtime/nasa-saga</url>
     <inceptionYear>2026</inceptionYear>
 
@@ -48,6 +48,7 @@
     </issueManagement>
 
     <properties>
+        <!-- 产物以 Java 21 为 API 与字节码基线；构建和运行允许使用更高版本的 JDK。 -->
         <java.version>21</java.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -203,6 +204,7 @@
                                 </requireMavenVersion>
                                 <requireJavaVersion>
                                     <version>[21,)</version>
+                                    <message>构建需要 JDK 21 或更高版本。</message>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>

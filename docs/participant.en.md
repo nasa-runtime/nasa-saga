@@ -54,6 +54,10 @@ The processor is registered through a service file. An application may configure
 </plugin>
 ```
 
+The example's `release=21` sets the application artifact's compatibility baseline and permits compilation on a newer JDK.
+Applications needing newer language features or APIs may select a release matching their deployment JDK. The processor
+supports the source levels provided by the compiler running it, without a fixed limit of 21.
+
 Compilation checks declarations, signatures, duplicate steps, and construction requirements. `rc.SagaStepDescriptor`
 checks runtime contracts. Neither proves idempotency, valid compensation, or business provenance; transactions and durable
 constraints must provide those properties.

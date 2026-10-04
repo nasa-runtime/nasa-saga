@@ -11,7 +11,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -38,13 +37,23 @@ import java.util.concurrent.CompletionStage;
  * managed 构造条件和同一编译单元内重复 step 合同进入产物。</p>
  */
 @SupportedAnnotationTypes("io.github.nasaruntime.saga.Saga")
-@SupportedSourceVersion(SourceVersion.RELEASE_21)
 public final class SagaAnnotationProcessor extends AbstractProcessor {
 
     private final Map<String, Element> descriptors = new HashMap<>();
 
     private Types types;
     private Elements elements;
+
+    /**
+     * 业务作用：按运行处理器的编译器声明源码支持范围，使 JDK 21 及以上的应用均可进行步骤合同校验。
+     * 参数说明：无。
+     *
+     * @return 当前编译器支持的最新源码级别；不改变 SDK 的 Java 21 字节码基线
+     */
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
+    }
 
     /**
      * 业务作用：保存类型系统和诊断工具，供每轮注解处理复用同一合同判断。

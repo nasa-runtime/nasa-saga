@@ -14,6 +14,9 @@ nasa-saga 提供 Java client、participant 合同和持久化适配；全局编�
 mvn -B -ntp clean verify
 ```
 
+Maven 的 JDK 要求为 `[21,)`，不设版本上限；`release=21` 固定编译产物的兼容基线。
+使用更高版本 JDK 构建时仍保持此基线，避免产物无意依赖较新的 API 或字节码。
+
 构建生成 protobuf/gRPC 类型、主 JAR、sources JAR 和 Javadoc JAR。生成类不手工维护；协议源位于
 `src/main/proto`，其 wire 合同与 Rust `nasaga-runtime-core/proto` 一致。
 

@@ -2,7 +2,7 @@
 
 [中文](README.md) | [English](README.en.md)
 
-`nasa-saga` connects Java 21 services to Rust Saga orchestration over HTTP/HMAC or gRPC/mTLS. Participants declare
+`nasa-saga` connects Java services running on JDK 21 or later to Rust Saga orchestration over HTTP/HMAC or gRPC/mTLS. Participants declare
 steps with `@Saga` and atomically commit business facts, Inbox, a participant gate, and result Outbox. Stable identities,
 leases, and fencing allow delivery to resume after crashes or uncertain network outcomes. Reliable clients commit
 business changes and a start intent together, so a committed business operation does not lose its orchestration request.
@@ -60,7 +60,9 @@ sent or prevent a privileged external database writer from changing facts outsid
 
 ## Requirements and dependency
 
-Use JDK 21+ and Maven 3.6.3+. Maven generates protobuf/gRPC types during the build:
+Building and running require JDK 21 or later; builds also require Maven 3.6.3+.
+`release=21` retains the Java 21 API and bytecode baseline without restricting the build or runtime JDK to version 21.
+Maven generates protobuf/gRPC types during the build:
 
 ```bash
 mvn -B -ntp clean verify

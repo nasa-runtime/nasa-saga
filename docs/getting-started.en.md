@@ -18,7 +18,7 @@ task executor by default.
 
 ## Dependencies and packages
 
-Use JDK 21+ and Maven 3.6.3+:
+Use JDK 21 or later for building and running, with Maven 3.6.3+ for builds. SDK artifacts retain a Java 21 compatibility baseline:
 
 ```xml
 <dependency>
